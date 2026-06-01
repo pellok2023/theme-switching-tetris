@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <title>經典與夢幻：主題切換俄羅斯方塊 | Premium Tetris Game</title>
+  <meta name="description" content="一款具有極致視覺饗宴與自訂音效的俄羅斯方塊遊戲。提供現代風、復古風、太空風和浪漫風四種主題隨心切換，支援手機與電腦，搭載自動合成音樂引擎。">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body class="theme-modern">
+  <!-- Scanlines for Traditional/Retro Theme -->
+  <div class="scanlines"></div>
+
+  <!-- Background Overlays for Space and Romantic Themes -->
+  <div class="bg-overlay">
+    <div class="stars"></div>
+    <div class="hearts"></div>
+  </div>
+
+  <div class="game-container">
+    <!-- Game Header: Title & Control Bar -->
+    <header class="game-header">
+      <h1 class="game-title" id="main-title">TETRIS</h1>
+      
+      <div class="control-hub">
+        <!-- Theme Selection -->
+        <div class="control-item">
+          <label for="theme-select">風格</label>
+          <select id="theme-select">
+            <option value="modern" selected>現代霓虹</option>
+            <option value="retro">傳統復古</option>
+            <option value="space">浩瀚太空</option>
+            <option value="romantic">浪漫粉櫻</option>
+          </select>
+        </div>
+
+        <!-- Audio Volume Control -->
+        <div class="control-item">
+          <label for="volume-slider">音量</label>
+          <div class="volume-control">
+            <button class="mute-btn" id="mute-btn" aria-label="切換靜音">🔊</button>
+            <input type="range" id="volume-slider" min="0" max="1" step="0.05" value="0.5">
+          </div>
+        </div>
+
+        <!-- Master Start/Pause Button -->
+        <button class="btn" id="start-btn">開始遊戲</button>
+      </div>
+    </header>
+
+    <!-- Main Playing Section -->
+    <main class="play-section">
+      <!-- Left Panel: Hold Area -->
+      <aside class="side-panel side-panel-left">
+        <div class="panel-card hold-panel">
+          <div class="panel-title">保留區 (C)</div>
+          <canvas id="hold-canvas" class="preview-canvas" aria-label="保留方塊預覽"></canvas>
+        </div>
+        
+        <!-- Score & High Score Stats (Left on Desktop) -->
+        <div class="panel-card">
+          <div class="stat-box">
+            <div class="panel-title">最高分數</div>
+            <div class="stat-val" id="high-score-val">0</div>
+          </div>
+        </div>
+      </aside>
+
+      <!-- Center Board: Canvas Frame & Overlays -->
+      <section class="board-container">
+        <canvas id="tetris-board" aria-label="俄羅斯方塊遊戲主畫板"></canvas>
+        
+        <!-- Welcome/Start Screen -->
+        <div class="overlay-screen active" id="start-screen">
+          <h2 class="overlay-title">俄羅斯方塊</h2>
+          <p class="overlay-desc">選擇您喜愛的風格，點擊下方按鈕開始！</p>
+          <button class="btn" id="btn-play-now">開始遊玩</button>
+        </div>
+
+        <!-- Pause Screen -->
+        <div class="overlay-screen" id="pause-screen">
+          <h2 class="overlay-title">遊戲暫停</h2>
+          <p class="overlay-desc">點擊繼續或按 Enter 鍵返回遊戲</p>
+          <button class="btn" id="btn-resume">繼續遊戲</button>
+        </div>
+
+        <!-- Game Over Screen -->
+        <div class="overlay-screen" id="game-over-screen">
+          <h2 class="overlay-title">遊戲結束</h2>
+          <p class="overlay-desc">您的得分為：<span id="final-score" style="font-weight: 800; font-size: 1.4rem;">0</span></p>
+          <button class="btn" id="btn-restart">再試一次</button>
+        </div>
+      </section>
+
+      <!-- Right Panel: Next Area & Levels -->
+      <aside class="side-panel side-panel-right">
+        <div class="panel-card next-panel">
+          <div class="panel-title">下一塊</div>
+          <canvas id="next-canvas" class="preview-canvas" aria-label="下一塊方塊預覽"></canvas>
+        </div>
+
+        <!-- Level & Lines Cleared Stats -->
+        <div class="panel-card">
+          <div class="stat-box" style="margin-bottom: 12px;">
+            <div class="panel-title">分數</div>
+            <div class="stat-val" id="score-val">0</div>
+          </div>
+          <div class="stat-box" style="margin-bottom: 12px;">
+            <div class="panel-title">關卡等級</div>
+            <div class="stat-val" id="level-val">1</div>
+          </div>
+          <div class="stat-box">
+            <div class="panel-title">已消除行數</div>
+            <div class="stat-val" id="lines-val">0</div>
+          </div>
+        </div>
+      </aside>
+    </main>
+
+    <!-- On-screen Handheld Game Controllers -->
+    <section class="controllers-section" aria-label="行動版觸控按鈕區">
+      <!-- Left D-pad: Directions & Hold -->
+      <div class="dpad-container">
+        <button class="controller-btn dpad-up" id="btn-up" aria-label="瞬間下落">▲</button>
+        <button class="controller-btn dpad-left" id="btn-left" aria-label="向左移動">◀</button>
+        <button class="controller-btn dpad-center" id="btn-hold" aria-label="保留/更換方塊" style="pointer-events: auto; background: var(--theme-primary); color: white; font-size: 0.8rem; font-weight: 800; font-family: inherit;">H</button>
+        <button class="controller-btn dpad-right" id="btn-right" aria-label="向右移動">▶</button>
+        <button class="controller-btn dpad-down" id="btn-down" aria-label="加速下落">▼</button>
+      </div>
+
+      <!-- Right Action Pad: Rotations -->
+      <div class="rotation-container">
+        <button class="controller-btn rotate-btn" id="btn-rot-l" aria-label="向左旋轉" style="background: linear-gradient(135deg, var(--theme-secondary), var(--theme-primary)); color: white;">
+          ↺
+          <span>左轉</span>
+        </button>
+        <button class="controller-btn rotate-btn" id="btn-rot-r" aria-label="向右旋轉" style="background: linear-gradient(135deg, var(--theme-secondary), var(--theme-primary)); color: white;">
+          ↻
+          <span>右轉</span>
+        </button>
+      </div>
+    </section>
+
+    <!-- Keyboard Shortcut Hints (Desktop) -->
+    <footer style="display: flex; justify-content: center; width: 100%; z-index: 10;">
+      <div class="keyboard-hints">
+        <strong>鍵盤快捷鍵：</strong><br>
+        • ◀ / ▶ 或 A / D : 左右移動<br>
+        • ▼ 或 S : 加速下落 (軟降)<br>
+        • 空白鍵 (Space) : 瞬間下落 (硬降)<br>
+        • ▲ 或 X : 順時針旋轉<br>
+        • Z : 逆時針旋轉<br>
+        • C / Shift : 保留方塊<br>
+        • P / Esc : 暫停或繼續遊戲
+      </div>
+    </footer>
+  </div>
+
+  <!-- Audio Synth & Core App Scripts -->
+  <script src="audio.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>

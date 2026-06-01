@@ -1,0 +1,942 @@
+/* ==========================================
+   style.css - Premium Tetris Style System
+   ========================================== */
+
+/* Font Imports */
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&family=Press+Start+2P&family=Orbitron:wght@400;700;900&family=Quicksand:wght@400;600;700&display=swap');
+
+/* CSS Reset & General Core */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+body {
+  overflow-x: hidden;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.8s ease, color 0.5s ease, font-family 0.3s ease;
+  font-family: 'Outfit', sans-serif;
+  position: relative;
+}
+
+/* Theme Variables and Bases */
+body.theme-modern {
+  background: linear-gradient(135deg, #0f0c1b 0%, #201335 50%, #0b071e 100%);
+  color: #f1f0fb;
+  --theme-primary: #a855f7;
+  --theme-secondary: #ec4899;
+  --theme-bg-panel: rgba(255, 255, 255, 0.06);
+  --theme-border: rgba(255, 255, 255, 0.12);
+  --theme-shadow: 0 8px 32px 0 rgba(124, 58, 237, 0.2);
+  --font-family: 'Outfit', sans-serif;
+  --glow-color: rgba(168, 85, 247, 0.6);
+  --panel-blur: 16px;
+}
+
+body.theme-retro {
+  background: #8bac0f; /* Gameboy greenish-yellow */
+  color: #0f380f;
+  --theme-primary: #306230;
+  --theme-secondary: #0f380f;
+  --theme-bg-panel: #9bbc0f;
+  --theme-border: #306230;
+  --theme-shadow: 4px 4px 0px #306230;
+  --font-family: 'Press Start 2P', monospace;
+  --glow-color: transparent;
+  --panel-blur: 0px;
+}
+
+body.theme-space {
+  background: radial-gradient(circle at center, #020111 0%, #050524 70%, #00000a 100%);
+  color: #a5f3fc;
+  --theme-primary: #06b6d4;
+  --theme-secondary: #3b82f6;
+  --theme-bg-panel: rgba(15, 23, 42, 0.7);
+  --theme-border: #0891b2;
+  --theme-shadow: 0 0 25px rgba(6, 182, 212, 0.3);
+  --font-family: 'Orbitron', sans-serif;
+  --glow-color: #06b6d4;
+  --panel-blur: 10px;
+}
+
+body.theme-romantic {
+  background: linear-gradient(135deg, #ffe4e6 0%, #fbcfe8 50%, #f472b6 100%);
+  color: #9d174d;
+  --theme-primary: #db2777;
+  --theme-secondary: #f43f5e;
+  --theme-bg-panel: rgba(255, 255, 255, 0.45);
+  --theme-border: rgba(219, 39, 119, 0.25);
+  --theme-shadow: 0 10px 25px rgba(219, 39, 119, 0.15);
+  --font-family: 'Quicksand', sans-serif;
+  --glow-color: rgba(251, 113, 133, 0.4);
+  --panel-blur: 8px;
+}
+
+/* Background Animations for Space and Romantic */
+.bg-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 0;
+  overflow: hidden;
+}
+
+/* Stars for Space Theme */
+.stars {
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  transition: opacity 0.8s ease;
+  background-image: 
+    radial-gradient(2px 2px at 20px 30px, #eee, rgba(0,0,0,0)),
+    radial-gradient(2px 2px at 40px 70px, #fff, rgba(0,0,0,0)),
+    radial-gradient(1.5px 1.5px at 50px 160px, #ddd, rgba(0,0,0,0)),
+    radial-gradient(2px 2px at 90px 40px, #fff, rgba(0,0,0,0)),
+    radial-gradient(2.5px 2.5px at 130px 80px, #fff, rgba(0,0,0,0)),
+    radial-gradient(1.5px 1.5px at 160px 120px, #ddd, rgba(0,0,0,0));
+  background-size: 200px 200px;
+  animation: spaceStars 60s linear infinite;
+}
+
+body.theme-space .stars {
+  opacity: 0.6;
+}
+
+@keyframes spaceStars {
+  from { background-position: 0 0; }
+  to { background-position: 1000px 1000px; }
+}
+
+/* Floating Hearts for Romantic Theme */
+.hearts {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  transition: opacity 0.8s ease;
+}
+
+body.theme-romantic .hearts {
+  opacity: 0.3;
+}
+
+.heart-shape {
+  position: absolute;
+  color: #f43f5e;
+  animation: floatHeart 12s linear infinite;
+  bottom: -50px;
+  font-size: 20px;
+}
+
+@keyframes floatHeart {
+  0% { transform: translateY(0) rotate(0deg); opacity: 0; }
+  10% { opacity: 0.8; }
+  90% { opacity: 0.8; }
+  100% { transform: translateY(-110vh) rotate(360deg); opacity: 0; }
+}
+
+/* Scanlines overlay for Retro Theme */
+.scanlines {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    rgba(18, 16, 16, 0) 50%, 
+    rgba(0, 0, 0, 0.08) 50%
+  );
+  background-size: 100% 4px;
+  pointer-events: none;
+  z-index: 999;
+  opacity: 0;
+  transition: opacity 0.8s ease;
+}
+body.theme-retro .scanlines {
+  opacity: 1;
+}
+
+/* Master container styling */
+.game-container {
+  width: 100%;
+  max-width: 950px;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  z-index: 10;
+  position: relative;
+}
+
+/* Apply CSS Variables to Font */
+.game-container, input, button, select {
+  font-family: var(--font-family);
+}
+
+/* Header Area styling */
+.game-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 15px;
+  background: var(--theme-bg-panel);
+  border: 1px solid var(--theme-border);
+  backdrop-filter: blur(var(--panel-blur));
+  padding: 15px 25px;
+  border-radius: 16px;
+  box-shadow: var(--theme-shadow);
+  transition: all 0.3s ease;
+}
+
+/* Title styling with text shadow in space/modern */
+.game-title {
+  font-size: 2.2rem;
+  font-weight: 800;
+  letter-spacing: 2px;
+  transition: all 0.3s ease;
+}
+
+body.theme-retro .game-title {
+  font-size: 1.4rem;
+  text-shadow: 2px 2px 0 #306230;
+  letter-spacing: 0;
+}
+
+body.theme-space .game-title {
+  text-shadow: 0 0 10px #06b6d4, 0 0 20px #06b6d4;
+  font-style: italic;
+}
+
+body.theme-romantic .game-title {
+  font-weight: 700;
+  color: #db2777;
+  text-shadow: 1px 1px 0 #ffe4e6;
+}
+
+/* Control Hub: Volume and Theme */
+.control-hub {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+
+.control-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+label {
+  font-size: 0.9rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+body.theme-retro label {
+  font-size: 0.6rem;
+  letter-spacing: 0;
+}
+
+select {
+  padding: 8px 16px;
+  border-radius: 8px;
+  background: var(--theme-bg-panel);
+  color: inherit;
+  border: 1px solid var(--theme-border);
+  outline: none;
+  cursor: pointer;
+  font-weight: 600;
+  transition: all 0.3s ease;
+}
+
+select:hover {
+  background: rgba(255, 255, 255, 0.12);
+}
+
+body.theme-retro select {
+  border: 2px solid #306230;
+  border-radius: 0;
+  font-size: 0.7rem;
+  background: #9bbc0f;
+  padding: 6px;
+}
+
+/* Volume controls custom range */
+.volume-control {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.mute-btn {
+  background: none;
+  border: none;
+  color: inherit;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  border: 1px solid var(--theme-border);
+  transition: all 0.3s ease;
+}
+
+.mute-btn:hover {
+  background: rgba(255, 255, 255, 0.1);
+  transform: scale(1.05);
+}
+
+body.theme-retro .mute-btn {
+  border: 2px solid #306230;
+  border-radius: 0;
+  font-size: 0.7rem;
+}
+
+/* Custom volume slider */
+input[type="range"] {
+  -webkit-appearance: none;
+  width: 90px;
+  height: 6px;
+  border-radius: 3px;
+  background: var(--theme-border);
+  outline: none;
+  cursor: pointer;
+  accent-color: var(--theme-primary);
+}
+
+body.theme-retro input[type="range"] {
+  border: 1px solid #306230;
+  border-radius: 0;
+  height: 10px;
+  background: #8bac0f;
+}
+
+/* Main Playing Section */
+.play-section {
+  display: grid;
+  grid-template-columns: 180px 1fr 180px;
+  gap: 20px;
+  align-items: start;
+}
+
+/* Side Panels */
+.side-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.panel-card {
+  background: var(--theme-bg-panel);
+  border: 1px solid var(--theme-border);
+  backdrop-filter: blur(var(--panel-blur));
+  padding: 15px;
+  border-radius: 16px;
+  box-shadow: var(--theme-shadow);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  transition: all 0.3s ease;
+}
+
+body.theme-retro .panel-card {
+  border: 2px solid #306230;
+  border-radius: 0;
+  box-shadow: var(--theme-shadow);
+}
+
+.panel-title {
+  font-size: 0.85rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  opacity: 0.85;
+  text-align: center;
+}
+
+body.theme-retro .panel-title {
+  font-size: 0.6rem;
+  letter-spacing: 0;
+  font-weight: normal;
+}
+
+/* Hold/Next preview canvas */
+.preview-canvas {
+  width: 80px;
+  height: 80px;
+  border: 1px dashed var(--theme-border);
+  border-radius: 8px;
+  background: rgba(0, 0, 0, 0.15);
+}
+
+body.theme-retro .preview-canvas {
+  border: 2px solid #306230;
+  border-radius: 0;
+  background: #8bac0f;
+}
+
+/* Stat text styling */
+.stat-box {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  width: 100%;
+}
+
+.stat-val {
+  font-size: 1.6rem;
+  font-weight: 800;
+  color: var(--theme-primary);
+  text-shadow: 0 0 10px var(--glow-color);
+  transition: all 0.3s ease;
+}
+
+body.theme-retro .stat-val {
+  font-size: 0.8rem;
+  color: #0f380f;
+  text-shadow: none;
+}
+
+body.theme-space .stat-val {
+  color: #22d3ee;
+}
+
+body.theme-romantic .stat-val {
+  color: #db2777;
+}
+
+/* Center Board Styling */
+.board-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: relative;
+}
+
+/* Main Canvas board */
+#tetris-board {
+  background: rgba(0, 0, 0, 0.4);
+  border: 4px solid var(--theme-border);
+  border-radius: 20px;
+  box-shadow: var(--theme-shadow), 0 0 20px rgba(0, 0, 0, 0.5);
+  display: block;
+  max-width: 100%;
+  width: 320px; /* Base desktop width */
+  height: 640px; /* Base desktop height */
+  transition: border 0.3s ease, box-shadow 0.3s ease, border-radius 0.3s ease;
+}
+
+body.theme-retro #tetris-board {
+  background: #9bbc0f;
+  border: 6px solid #306230;
+  border-radius: 0;
+  box-shadow: none;
+}
+
+body.theme-space #tetris-board {
+  background: rgba(1, 2, 10, 0.9);
+  border: 3px solid #06b6d4;
+  box-shadow: 0 0 30px rgba(6, 182, 212, 0.4);
+}
+
+body.theme-romantic #tetris-board {
+  background: rgba(255, 255, 255, 0.55);
+  border: 4px solid #f472b6;
+  box-shadow: 0 12px 30px rgba(244, 114, 182, 0.2);
+}
+
+/* Game Info / Overlay screen (Pause, Start, Game Over) */
+.overlay-screen {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  border-radius: 16px;
+  background: rgba(15, 12, 27, 0.85);
+  backdrop-filter: blur(8px);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 20px;
+  padding: 30px;
+  z-index: 100;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.4s ease;
+  text-align: center;
+}
+
+.overlay-screen.active {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+body.theme-retro .overlay-screen {
+  background: #9bbc0f;
+  backdrop-filter: none;
+  border-radius: 0;
+  border: 6px solid #306230;
+}
+
+body.theme-space .overlay-screen {
+  background: rgba(5, 5, 20, 0.92);
+  border: 3px solid #06b6d4;
+}
+
+body.theme-romantic .overlay-screen {
+  background: rgba(255, 228, 230, 0.94);
+  backdrop-filter: blur(4px);
+  border: 4px solid #f472b6;
+}
+
+.overlay-title {
+  font-size: 2rem;
+  font-weight: 800;
+  margin-bottom: 5px;
+}
+
+body.theme-retro .overlay-title {
+  font-size: 1rem;
+}
+
+.overlay-desc {
+  font-size: 1rem;
+  opacity: 0.8;
+  max-width: 250px;
+  line-height: 1.5;
+}
+
+body.theme-retro .overlay-desc {
+  font-size: 0.6rem;
+}
+
+/* Core Buttons */
+.btn {
+  padding: 12px 24px;
+  font-size: 1rem;
+  font-weight: 700;
+  border: none;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  background: linear-gradient(135deg, var(--theme-primary), var(--theme-secondary));
+  color: white;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+}
+
+.btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(0,0,0,0.3);
+}
+
+.btn:active {
+  transform: translateY(1px);
+}
+
+body.theme-retro .btn {
+  background: #8bac0f;
+  color: #0f380f;
+  border: 3px solid #306230;
+  border-radius: 0;
+  box-shadow: 4px 4px 0 #306230;
+  font-size: 0.7rem;
+}
+
+body.theme-retro .btn:hover {
+  background: #306230;
+  color: #9bbc0f;
+  transform: none;
+  box-shadow: 2px 2px 0 #0f380f;
+}
+
+body.theme-retro .btn:active {
+  transform: translate(2px, 2px);
+  box-shadow: none;
+}
+
+body.theme-romantic .btn {
+  background: linear-gradient(135deg, #f43f5e, #db2777);
+  color: white;
+  border-radius: 20px;
+}
+
+/* Keyboard Hints Box */
+.keyboard-hints {
+  font-size: 0.8rem;
+  line-height: 1.6;
+  opacity: 0.7;
+  max-width: 320px;
+  background: rgba(0,0,0,0.2);
+  padding: 12px;
+  border-radius: 8px;
+  border: 1px solid var(--theme-border);
+  margin-top: 10px;
+}
+
+body.theme-retro .keyboard-hints {
+  font-size: 0.5rem;
+  background: #9bbc0f;
+  border: 2px solid #306230;
+  border-radius: 0;
+}
+
+/* Handheld Game Controller HUD Layout */
+.controllers-section {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 40px;
+  margin-top: 10px;
+  background: var(--theme-bg-panel);
+  border: 1px solid var(--theme-border);
+  backdrop-filter: blur(var(--panel-blur));
+  padding: 20px 40px;
+  border-radius: 24px;
+  box-shadow: var(--theme-shadow);
+  transition: all 0.3s ease;
+}
+
+body.theme-retro .controllers-section {
+  border: 2px solid #306230;
+  border-radius: 0;
+  background: #9bbc0f;
+}
+
+/* D-pad Controller (Left) */
+.dpad-container {
+  display: grid;
+  grid-template-columns: repeat(3, 54px);
+  grid-template-rows: repeat(3, 54px);
+  gap: 4px;
+  position: relative;
+}
+
+.controller-btn {
+  width: 54px;
+  height: 54px;
+  background: var(--theme-bg-panel);
+  border: 2px solid var(--theme-border);
+  color: inherit;
+  font-weight: bold;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-size: 1.2rem;
+  transition: all 0.15s ease;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+}
+
+.controller-btn:hover {
+  background: rgba(255, 255, 255, 0.1);
+  border-color: var(--theme-primary);
+}
+
+.controller-btn:active {
+  transform: scale(0.92);
+  background: var(--theme-primary);
+  color: white;
+  box-shadow: 0 0 10px var(--glow-color);
+}
+
+body.theme-retro .controller-btn {
+  border: 3px solid #306230;
+  border-radius: 0;
+  background: #9bbc0f;
+  font-size: 0.8rem;
+  box-shadow: 3px 3px 0 #306230;
+}
+
+body.theme-retro .controller-btn:active {
+  transform: translate(2px, 2px);
+  box-shadow: none;
+  background: #306230;
+  color: #9bbc0f;
+}
+
+body.theme-romantic .controller-btn {
+  border-radius: 50%;
+  border-color: rgba(219, 39, 119, 0.2);
+}
+
+/* Specific Grid Placements for Dpad */
+.dpad-up    { grid-column: 2; grid-row: 1; }
+.dpad-left  { grid-column: 1; grid-row: 2; }
+.dpad-right { grid-column: 3; grid-row: 2; }
+.dpad-down  { grid-column: 2; grid-row: 3; }
+.dpad-center { 
+  grid-column: 2; 
+  grid-row: 2; 
+  background: rgba(0,0,0,0.15); 
+  border: none;
+  cursor: default; 
+  pointer-events: none;
+  box-shadow: none;
+}
+
+body.theme-retro .dpad-center {
+  background: #306230;
+  border: none;
+}
+
+/* Rotation Pad Controller (Right) */
+.rotation-container {
+  display: flex;
+  gap: 15px;
+}
+
+.rotate-btn {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  font-size: 0.95rem;
+  font-weight: 800;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+}
+
+.rotate-btn span {
+  font-size: 0.65rem;
+  font-weight: 500;
+  opacity: 0.8;
+}
+
+body.theme-retro .rotate-btn span {
+  font-size: 0.4rem;
+}
+
+/* ==========================================
+   Responsive Web Design (RWD) Styles
+   ========================================== */
+
+/* Tablet View: Shrink and rearrange sidebars */
+@media (max-width: 900px) {
+  .game-container {
+    max-width: 650px;
+    padding: 10px;
+  }
+  
+  .play-section {
+    grid-template-columns: 1fr;
+    gap: 15px;
+  }
+  
+  /* Arrange stats / hold / next sidebars horizontally above the board */
+  .side-panel {
+    flex-direction: row;
+    justify-content: space-between;
+    width: 100%;
+  }
+
+  .panel-card {
+    flex: 1;
+    flex-direction: row;
+    justify-content: center;
+    padding: 10px;
+    gap: 12px;
+  }
+  
+  .panel-card.hold-panel, .panel-card.next-panel {
+    flex: 0 1 auto;
+    flex-direction: column;
+  }
+
+  .preview-canvas {
+    width: 60px;
+    height: 60px;
+  }
+  
+  .stat-box {
+    flex-direction: row;
+    justify-content: space-between;
+    padding: 0 10px;
+  }
+  
+  .side-panel-right {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+    width: 100%;
+  }
+
+  .side-panel-right .panel-card {
+    flex-direction: column;
+  }
+}
+
+/* Mobile View: Vertical consolidation */
+@media (max-width: 500px) {
+  body {
+    padding: 5px;
+    justify-content: flex-start;
+  }
+  
+  .game-container {
+    gap: 10px;
+    padding: 5px;
+  }
+  
+  .game-header {
+    padding: 10px;
+    border-radius: 12px;
+  }
+  
+  .game-title {
+    font-size: 1.5rem;
+  }
+  
+  body.theme-retro .game-title {
+    font-size: 0.9rem;
+  }
+  
+  .control-hub {
+    gap: 10px;
+    width: 100%;
+    justify-content: space-between;
+  }
+  
+  select {
+    padding: 6px 12px;
+    font-size: 0.8rem;
+  }
+  
+  body.theme-retro select {
+    font-size: 0.6rem;
+    padding: 4px;
+  }
+  
+  input[type="range"] {
+    width: 70px;
+  }
+
+  /* Previews and Board Row */
+  .play-section {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  /* Custom mobile preview placement: side by side with stats */
+  .side-panel {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 6px;
+    width: 100%;
+    margin-bottom: 5px;
+  }
+  
+  .panel-card {
+    padding: 6px 4px;
+    border-radius: 10px;
+    flex-direction: column;
+    justify-content: space-between;
+    height: 90px;
+  }
+  
+  .panel-card.hold-panel, .panel-card.next-panel {
+    height: 90px;
+  }
+
+  .preview-canvas {
+    width: 45px;
+    height: 45px;
+  }
+
+  .panel-title {
+    font-size: 0.65rem;
+    letter-spacing: 0.5px;
+  }
+  
+  body.theme-retro .panel-title {
+    font-size: 0.4rem;
+  }
+
+  .stat-box {
+    flex-direction: column;
+    justify-content: center;
+    gap: 2px;
+  }
+
+  .stat-val {
+    font-size: 1rem;
+  }
+  
+  body.theme-retro .stat-val {
+    font-size: 0.6rem;
+  }
+
+  /* Board sizing on mobile */
+  #tetris-board {
+    width: 100%;
+    height: auto;
+    aspect-ratio: 1 / 2;
+    max-height: 52vh; /* scale depending on screen space */
+  }
+
+  /* Controllers split at the bottom of the screen */
+  .controllers-section {
+    padding: 12px;
+    border-radius: 16px;
+    gap: 10px;
+    width: 100%;
+    margin-top: 5px;
+  }
+  
+  .dpad-container {
+    grid-template-columns: repeat(3, 42px);
+    grid-template-rows: repeat(3, 42px);
+    gap: 2px;
+  }
+  
+  .controller-btn {
+    width: 42px;
+    height: 42px;
+    font-size: 0.95rem;
+  }
+  
+  .rotation-container {
+    gap: 8px;
+  }
+  
+  .rotate-btn {
+    width: 48px;
+    height: 48px;
+    font-size: 0.8rem;
+  }
+  
+  .rotate-btn span {
+    font-size: 0.5rem;
+  }
+  
+  .keyboard-hints {
+    display: none; /* Hide on mobile to save space */
+  }
+}
