@@ -795,46 +795,48 @@ body.theme-retro .rotate-btn span {
 /* Mobile View: Vertical consolidation */
 @media (max-width: 500px) {
   body {
-    padding: 5px;
+    padding: 4px;
     justify-content: flex-start;
   }
   
   .game-container {
-    gap: 10px;
-    padding: 5px;
+    gap: 8px;
+    padding: 2px;
   }
   
   .game-header {
-    padding: 10px;
-    border-radius: 12px;
+    padding: 8px 12px;
+    border-radius: 10px;
+    gap: 8px;
   }
   
   .game-title {
-    font-size: 1.5rem;
+    font-size: 1.4rem;
+    letter-spacing: 1px;
   }
   
   body.theme-retro .game-title {
-    font-size: 0.9rem;
+    font-size: 0.8rem;
   }
   
   .control-hub {
-    gap: 10px;
+    gap: 6px;
     width: 100%;
     justify-content: space-between;
   }
   
   select {
-    padding: 6px 12px;
-    font-size: 0.8rem;
+    padding: 4px 8px;
+    font-size: 0.75rem;
   }
   
   body.theme-retro select {
-    font-size: 0.6rem;
-    padding: 4px;
+    font-size: 0.55rem;
+    padding: 3px;
   }
   
   input[type="range"] {
-    width: 70px;
+    width: 60px;
   }
 
   /* Previews and Board Row */
@@ -842,84 +844,94 @@ body.theme-retro .rotate-btn span {
     display: flex;
     flex-direction: column;
     align-items: center;
+    gap: 8px;
   }
 
   /* Custom mobile preview placement: side by side with stats */
   .side-panel {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
-    gap: 6px;
+    gap: 4px;
     width: 100%;
-    margin-bottom: 5px;
+    margin-bottom: 2px;
   }
   
   .panel-card {
-    padding: 6px 4px;
-    border-radius: 10px;
+    padding: 4px;
+    border-radius: 8px;
     flex-direction: column;
-    justify-content: space-between;
-    height: 90px;
+    justify-content: center;
+    height: 72px; /* reduced height to maximize board space */
   }
   
   .panel-card.hold-panel, .panel-card.next-panel {
-    height: 90px;
+    height: 72px;
   }
 
   .preview-canvas {
-    width: 45px;
-    height: 45px;
+    width: 40px;
+    height: 40px;
+    border-style: solid;
+    border-width: 1px;
   }
 
   .panel-title {
-    font-size: 0.65rem;
-    letter-spacing: 0.5px;
+    font-size: 0.55rem;
+    letter-spacing: 0px;
+    margin-bottom: 2px;
   }
   
   body.theme-retro .panel-title {
-    font-size: 0.4rem;
+    font-size: 0.38rem;
   }
 
   .stat-box {
     flex-direction: column;
     justify-content: center;
-    gap: 2px;
+    gap: 1px;
   }
 
   .stat-val {
-    font-size: 1rem;
+    font-size: 0.95rem;
   }
   
   body.theme-retro .stat-val {
-    font-size: 0.6rem;
+    font-size: 0.55rem;
   }
 
-  /* Board sizing on mobile */
+  /* Board sizing on mobile - maximized real estate */
   #tetris-board {
-    width: 100%;
+    width: 96%;
+    max-width: 320px;
     height: auto;
     aspect-ratio: 1 / 2;
-    max-height: 52vh; /* scale depending on screen space */
+    max-height: 62vh; /* Expanded board vertical space */
   }
 
   /* Controllers split at the bottom of the screen */
   .controllers-section {
-    padding: 12px;
-    border-radius: 16px;
-    gap: 10px;
+    padding: 8px 12px;
+    border-radius: 12px;
+    gap: 8px;
     width: 100%;
-    margin-top: 5px;
+    margin-top: 2px;
   }
   
   .dpad-container {
-    grid-template-columns: repeat(3, 42px);
-    grid-template-rows: repeat(3, 42px);
-    gap: 2px;
+    grid-template-columns: repeat(3, 46px); /* Enlarged buttons for better fat-finger touch */
+    grid-template-rows: repeat(3, 46px);
+    gap: 3px;
   }
   
   .controller-btn {
-    width: 42px;
-    height: 42px;
-    font-size: 0.95rem;
+    width: 46px;
+    height: 46px;
+    font-size: 1.1rem;
+    border-radius: 8px;
+  }
+
+  .dpad-center {
+    font-size: 0.75rem !important;
   }
   
   .rotation-container {
@@ -927,13 +939,13 @@ body.theme-retro .rotate-btn span {
   }
   
   .rotate-btn {
-    width: 48px;
-    height: 48px;
-    font-size: 0.8rem;
+    width: 52px;
+    height: 52px;
+    font-size: 0.9rem;
   }
   
   .rotate-btn span {
-    font-size: 0.5rem;
+    font-size: 0.45rem;
   }
   
   .keyboard-hints {
